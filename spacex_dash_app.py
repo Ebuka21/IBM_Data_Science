@@ -29,7 +29,7 @@ app.layout = html.Div(children=[html.H1('SpaceX Launch Records Dashboard',
                                                 {'label':'VAFB SLC-4E', 'value':'VAFB SLC-4E'}
                                                 ],
                                             value='ALL',
-                                            placeholder="place holder here",
+                                            placeholder="Choose Launch Site",
                                             searchable=True
                                             ),
                                 html.Br(),
@@ -65,7 +65,6 @@ app.layout = html.Div(children=[html.H1('SpaceX Launch Records Dashboard',
                                 # TASK 4: Add a scatter chart to show the correlation between payload and launch success
                                 html.P("Scatter plot"),
                                 html.Div(dcc.Graph(id='success-payload-scatter-chart')),
-                                html.Br()
                                 ])
 
 # TASK 2:
@@ -94,15 +93,15 @@ def get_pie_chart(site_dropdown):
 # Add a callback function for `site-dropdown` and `payload-slider` as inputs, `success-payload-scatter-chart` as output
 @app.callback(Output(component_id='success-payload-scatter-chart', component_property='figure'),
               [Input(component_id='site-dropdown', component_property='value'),
-              Input(component_id="payload-slider", component_property="value")])
+              Input(component_id="payload-slicer", component_property="value")])
 
-def get_scatter(site_dropdown,slider_range):
+def get_scatter(site,slider_range):
     #print(slider_range)
     low, high = slider_range
     slide=(spacex_df['Payload Mass (kg)'] > low) & (spacex_df['Payload Mass (kg)'] < high)
     dropdown_scatter=spacex_df[slide]
 
-    if site_dropdown == 'ALL':
+    if site == 'ALL':
         figure = px.scatter(
             dropdown_scatter, x='Payload Mass (kg)', y='class',
             hover_data=['Booster Version'],
@@ -110,8 +109,8 @@ def get_scatter(site_dropdown,slider_range):
             title='Correlation between Payload and Success for all Sites')
         return figure
     else:
-        dropdown_scatter = dropdown_scatter[spacex_df['Launch Site'] == site_dropdown]
-        title_scatter = f'Success by Payload Size for {site_dropdown}'
+        dropdown_scatter = dropdown_scatter[spacex_df['Launch Site'] == site]
+        title_scatter = f'Success by Payload Size for {site}'
         fig=px.scatter(
             dropdown_scatter,x='Payload Mass (kg)', y='class', 
             title = title_scatter, 
