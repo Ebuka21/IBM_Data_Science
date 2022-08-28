@@ -102,12 +102,12 @@ def get_scatter(site,slider_range):
     dropdown_scatter=spacex_df[slide]
 
     if site == 'ALL':
-        figure = px.scatter(
+        fig = px.scatter(
             dropdown_scatter, x='Payload Mass (kg)', y='class',
             hover_data=['Booster Version'],
             color='Booster Version Category',
             title='Correlation between Payload and Success for all Sites')
-        return figure
+        return fig
     else:
         dropdown_scatter = dropdown_scatter[spacex_df['Launch Site'] == site]
         title_scatter = f'Success by Payload Size for {site}'
@@ -115,7 +115,7 @@ def get_scatter(site,slider_range):
             dropdown_scatter,x='Payload Mass (kg)', y='class', 
             title = title_scatter, 
             color='Booster Version Category')
-        return figure
+        return fig
 
 # Run the app
 if __name__ == '__main__':
